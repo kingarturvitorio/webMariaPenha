@@ -1,0 +1,93 @@
+{% extends "app/base_site.html" %}
+{% load static %}
+
+{% block content %}
+<div class="right_col" role="main">
+  <div class="">
+    <div class="title_left">
+      <div class="row">
+        <div class="car-grid">
+
+          {# Primeira linha: Ocorrências de Prioridade Alta #}
+          <h3>Ocorrências de Prioridade Alta</h3>
+          <div class="priority-high">
+            {% for ocorrencia in ocorrencias %}
+              {% if ocorrencia.nivelocorrencia == 3 %}
+                <div class="car-card {{ ocorrencia.css_class }}" 
+                     data-lat="{{ ocorrencia.latocorr|floatformat:5 }}"
+                     data-long="{{ ocorrencia.longocorr|floatformat:5 }}">
+                  <h2>{{ ocorrencia.solicitante_nome }}</h2>
+                  <h2>{{ ocorrencia.datahora }}</h2>
+                  <h2>{{ ocorrencia.latocorr }}</h2>
+                  <h2>{{ ocorrencia.longocorr }}</h2>
+                  <!-- Botões para abrir mapa e WebSocket -->
+                  <button onclick="openMapPopup('{{ ocorrencia.latocorr|floatformat:5 }}', '{{ ocorrencia.longocorr|floatformat:5 }}')">Localidade</button>
+                  <button onclick="openWebSocketMapPopup('{{ ocorrencia.latocorr|floatformat:5 }}', '{{ ocorrencia.longocorr|floatformat:5 }}')">Tempo Real</button>
+                </div>
+              {% endif %}
+            {% endfor %}
+          </div>
+
+          {# Repetir o mesmo para Prioridade Média e Baixa #}
+          <h3>Ocorrências de Prioridade Média</h3>
+          <div class="priority-medium">
+            {% for ocorrencia in ocorrencias %}
+              {% if ocorrencia.nivelocorrencia == 2 %}
+                <div class="car-card {{ ocorrencia.css_class }}" 
+                     data-lat="{{ ocorrencia.latocorr|floatformat:5 }}"
+                     data-long="{{ ocorrencia.longocorr|floatformat:5 }}">
+                  <h2>{{ ocorrencia.solicitante_nome }}</h2>
+                  <h2>{{ ocorrencia.datahora }}</h2>
+                  <h2>{{ ocorrencia.latocorr }}</h2>
+                  <h2>{{ ocorrencia.longocorr }}</h2>
+                  <button onclick="openMapPopup('{{ ocorrencia.latocorr|floatformat:5 }}', '{{ ocorrencia.longocorr|floatformat:5 }}')">Localidade</button>
+                  <button onclick="openWebSocketMapPopup('{{ ocorrencia.latocorr|floatformat:5 }}', '{{ ocorrencia.longocorr|floatformat:5 }}')">Tempo Real</button>
+                </div>
+              {% endif %}
+            {% endfor %}
+          </div>
+
+          <h3>Ocorrências de Prioridade Baixa</h3>
+          <div class="priority-low">
+            {% for ocorrencia in ocorrencias %}
+              {% if ocorrencia.nivelocorrencia == 1 %}
+                <div class="car-card {{ ocorrencia.css_class }}" 
+                     data-lat="{{ ocorrencia.latocorr|floatformat:5 }}"
+                     data-long="{{ ocorrencia.longocorr|floatformat:5 }}">
+                  <h2>{{ ocorrencia.solicitante_nome }}</h2>
+                  <h2>{{ ocorrencia.datahora }}</h2>
+                  <h2>{{ ocorrencia.latocorr }}</h2>
+                  <h2>{{ ocorrencia.longocorr }}</h2>
+                  <button onclick="openMapPopup('{{ ocorrencia.latocorr|floatformat:5 }}', '{{ ocorrencia.longocorr|floatformat:5 }}')">Localidade</button>
+                  <button onclick="openWebSocketMapPopup('{{ ocorrencia.latocorr|floatformat:5 }}', '{{ ocorrencia.longocorr|floatformat:5 }}')">Tempo Real</button>
+                </div>
+              {% endif %}
+            {% endfor %}
+          </div>
+
+        </div>
+
+        {% if not ocorrencias %}
+          <p class="no-results">Nenhuma ocorrência encontrada.</p>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="mapModal" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="closeMapPopup()">&times;</span>
+    <iframe id="mapFrame" width="100%" height="450" frameborder="0" style="border:0" allowfullscreen></iframe>
+  </div>
+</div>
+
+{# Novo modal para o WebSocket #}
+<div id="websocketMapModal" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="closeWebSocketMapPopup()">&times;</span>
+    <div id="websocketMap" style="width: 100%; height: 450px;"></div> <!-- Contêiner para o mapa do WebSocket -->
+  </div>
+</div>
+
+{% endblock %}

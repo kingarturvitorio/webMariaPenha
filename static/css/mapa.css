@@ -1,0 +1,49 @@
+
+/* Estilos do modal */
+.modal {
+  display: none; /* Oculta o modal por padrão */
+  position: fixed; /* Fica fixo na tela */
+  z-index: 1000; /* Fica acima de outros conteúdos */
+  left: 0;
+  top: 0;
+  width: 100%; /* Largura total */
+  height: 100%; /* Altura total */
+  overflow: auto; /* Habilita rolagem se necessário */
+  background-color: rgba(0, 0, 0, 0.7); /* Fundo semi-transparente */
+}
+  
+/* Estilos do conteúdo do modal */
+.modal-content {
+  background-color: #fefefe;
+  margin: auto; /* Centraliza o modal */
+  padding: 20px;
+  border: 1px solid #888;
+  width: 90%; /* Ajusta a largura do modal */
+  max-width: 800px; /* Define uma largura máxima */
+  height: 80%; /* Ajusta a altura do modal */
+  max-height: 600px; /* Define uma altura máxima */
+  overflow: hidden; /* Impede o conteúdo de ultrapassar o modal */
+  border-radius: 8px; /* Bordas arredondadas */
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5); /* Sombra para o modal */
+}
+
+/* Estilos para o iframe do mapa */
+#mapFrame {
+  width: 100%; /* Largura total do iframe */
+  height: calc(100% - 40px); /* Altura do iframe, ajustando para margens */
+  border: none; /* Remove borda do iframe */
+}
+  
+  .close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+  }
+  
+  .close:hover,
+  .close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+  }

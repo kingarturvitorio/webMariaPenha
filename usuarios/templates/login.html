@@ -1,0 +1,51 @@
+{% include 'partials/headers.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+<style>
+  body, html {
+      height: 100%; /* Garantir que o corpo e HTML ocupem 100% da altura da janela */
+      margin: 0; /* Remover margens padrão */
+      display: flex; /* Ativar o flexbox */
+      justify-content: center; /* Centraliza horizontalmente */
+      align-items: center; /* Centraliza verticalmente */
+      background-color: #f8f9fa; /* Cor de fundo opcional */
+  }
+  
+  .login-container {
+      text-align: center; /* Centraliza o texto dentro do container */
+      padding: 20px; /* Adiciona algum espaço ao redor do conteúdo */
+      background-color: white; /* Fundo branco para o container */
+      border-radius: 8px; /* Bordas arredondadas */
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra leve para o container */
+  }
+  
+  .login-image {
+      width: 100px; /* Ajuste o tamanho da imagem conforme necessário */
+      margin-bottom: 20px; /* Espaço abaixo da imagem */
+  }
+  
+  .login-form {
+      max-width: 400px; /* Limite a largura do formulário */
+      margin: 0 auto; /* Centraliza o formulário horizontalmente */
+  }
+</style>
+
+
+{% block content %}
+<div class="container">
+    <div class="col py-3">
+        <div class="login-container">
+            <img src="{% static 'img/maria.jpeg' %}" alt="Logo" class="login-image"> <!-- Adicione o caminho da sua imagem -->
+            <h3>Autenticação</h3>
+            <h3>Sistema Maria da Penha</h3>
+        
+            <form action="" method="POST" class="login-form">
+                {% csrf_token %}
+                {{ login_form|crispy }}
+                <button type="submit" class="btn btn-success mt-3">Entrar</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

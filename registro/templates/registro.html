@@ -1,0 +1,67 @@
+{% extends "app/base_site.html" %}
+
+{%load static}
+
+{% block content %}
+
+<div class="right_col" role="main">
+    <div class="">
+        <div class="title_left">
+            <h3>Lista de pessoas registradas</h3>
+            <a href="{% url 'registro-create' %}" class="btn btn-primary btn-sm">Adicionar registro</a>
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <tr>
+                        <th>Status</th>
+                        <th>Nome</th>
+                        <th>CPF</th>
+                        <th>Telefone</th>
+                        <th>Logradouro</th>
+                        <th>N. Residencia</th>
+                        <th>Bairro</th>
+                        <th>Cidade</th>
+                        <th>Uf</th>
+                        <th>Cep</th>
+                        <th>DT. Nascimento</th>
+                        <th>DT. Cadastro</th>
+                        <th>Processo</th>
+                        <th>Obs</th>
+                        <th>Descrição</th>
+                    </tr>
+
+                    {% for registro in registros %}
+                    <tr>
+                        <td>{{registro.status}}</td>
+                        <td>{{registro.nome}}</td>
+                        <td>{{registro.cpf}}</td>
+                        <td>{{registro.telefone}}</td>
+                        <td>{{registro.logradouro}}</td>
+                        <td>{{registro.nres}}</td>
+                        <td>{{registro.bairro}}</td>
+                        <td>{{registro.cidade}}</td>
+                        <td>{{registro.uf}}</td>
+                        <td>{{registro.cep}}</td>
+                        <td>{{registro.dtnasc}}</td>
+                        <td>{{registro.dtcadastro}}</td>
+                        <td>{{registro.processo}}</td>
+                        <td>{{registro.observacoes}}</td>
+                        <td>{{registro.descricao_ocorrencia}}</td>
+                        <td>
+                            <a href="{% url 'registro-update' registro.id %}" class="btn btn-warning btn=sm"
+                                title="Editar">E</a>
+                            <a href="{% url 'registro-delete' registro.id %}" class="btn btn-danger btn=sm"
+                                title="Excluir">X</a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="3">Nenhum registrado encontrado</td>
+                    </tr>
+                    {% endfor %}
+
+
+                </table>
+            </div>
+        </div>
+    </div>
+    {% endblock %}

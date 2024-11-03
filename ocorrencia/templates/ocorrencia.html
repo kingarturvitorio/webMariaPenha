@@ -1,0 +1,74 @@
+{% extends "app/base_site.html" %}
+
+{%load static}
+
+{% block content %}
+
+<div class="right_col" role="main">
+    <div class="">
+      <div class="page-title">
+        <div class="title_left">
+          <h3>Listar Ocorrência</h3>
+        </div>
+
+        <div class="title_right">
+          <div class="col-md-5 col-sm-5 col-xs-12 form-group pull-right top_search">
+            <div class="input-group">
+              <input type="text" class="form-control" placeholder="Pesquisar por">
+              <span class="input-group-btn">
+                <button class="btn btn-default" type="button">Pesquisar</button>
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="clearfix"></div>
+      <div class="row">
+        <div class="col-md-12 col-sm-12 col-xs-12">
+          <div class="x_panel">
+            <div class="x_title">
+              <h2>Ocorrências:</h2>
+            </div>
+            <div class="x_content">
+              <div class="table-responsive">
+                  <table class="table table-striped">
+                      <tr>
+                          <th>Nível Ocorrência</th>
+                          <th>Data e Hora</th>
+                          <th>Latitude</th>
+                          <th>Longitude</th>
+                          <th>Status</th>
+                          <th>Opção</th>
+                          <th>Solicitante</th>
+                      </tr>
+                      
+                      {% for ocorrencia in ocorrencias %}
+                      <tr>
+                          <td>{{ocorrencia.solicitante}}</td>
+                          <td>{{ocorrencia.nivelocorrencia}}</td>
+                          <td>{{ocorrencia.datahora}}</td>
+                          <td>{{ocorrencia.latocorr}}</td>
+                          <td>{{ocorrencia.longocorr}}</td>
+                          <td>{{ocorrencia.status}}</td>
+                          <td>{{ocorrencia.link}}</td>
+                      </tr>
+                      {% empty %}
+                      <tr>
+                          <td colspan="3">Nenhuma ocorrência registrada</td>
+                      </tr>
+                      {% endfor %}
+              
+              
+                  </table>
+
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+</div>
+
+
+{% endblock %}
