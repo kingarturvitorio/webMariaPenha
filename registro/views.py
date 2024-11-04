@@ -1,5 +1,6 @@
 import requests
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
+from django.utils.translation import gettext_lazy as _
 
 from django.urls import reverse_lazy
 from ocorrencia.forms import Ocorrencias
@@ -88,86 +89,56 @@ class RegistroUpdateView(UpdateView):
     registro_bloqueado = False  # Inicializamos a flag como False
 
     def get_object(self, queryset=None):
-        id = self.kwargs.get('id')
+        # Obtenha o ID do solicitante a partir dos kwargs
+        solicitante_id = self.kwargs.get('id')
+
         headers = {
             'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoyMDQ0MDYzOTE1LCJpYXQiOjE3Mjg3MDM5MTUsImp0aSI6IjllMWYxODgzOGIxNjRiZGNiNDg2MDdlNDc3YjRkNGVkIiwidXNlcl9pZCI6MX0.wY782l5Mke0w7BiOrodYRJA7CMwRISVk5kW1Q9CvXv4',
             'Content-Type': 'application/json'
         }
-        response = requests.get(f"http://3.20.168.85/api/v1/solicitantes/{id}/", headers=headers)
+        # Primeiro, busque o solicitante pelo ID fornecido
+        solicitante_url = f"http://3.20.168.85/api/v1/solicitantes/{solicitante_id}/"
+        solicitante_response = requests.get(solicitante_url, headers=headers)
+        
+        if solicitante_response.status_code == 200:
+            solicitante_data = solicitante_response.json()
+            cpf = solicitante_data.get("cpf")
 
-        if response.status_code == 200:
-            data = response.json()
-
-            # Obtem o CPF do solicitante
-            cpf = data.get("cpf")
-            print(cpf)
             if not cpf:
-                raise ValueError("CPF do solicitante não encontrado.")
+                raise ValueError(_("CPF do solicitante não encontrado."))
 
-            # Verifica na API de ocorrências se há uma ocorrência associada a este CPF
-            response_ocorrencia = requests.get(f"http://3.20.168.85/api/v1/ocorrencias/?cpf_solicitante={cpf}", headers=headers)
-            if response_ocorrencia.status_code == 200:
-                ocorrencias = response_ocorrencia.json()
 
-                # Se há ocorrências associadas ao solicitante, bloqueia a atualização
-                if ocorrencias:
-                    raise ValueError("Este registro não pode ser alterado pois está vinculado a uma ocorrência.")
-
-            # Filtra apenas os campos válidos do modelo Registro
-            registro_data = {key: data[key] for key in data if key in [field.name for field in Registro._meta.fields]}
-
-            # Encontra ou cria um registro localmente com os dados da API
-            registro, created = Registro.objects.update_or_create(id=data['id'], defaults=registro_data)
+            registro_data = {key: solicitante_data[key] for key in solicitante_data if key in [field.name for field in Registro._meta.fields]}
+            registro, created = Registro.objects.update_or_create(id=solicitante_id, defaults=registro_data)
 
             return registro
         else:
-            raise Http404("Registro não encontrado")
-
-    def get_initial(self):
-            # Pegue os dados do objeto (retornado pelo get_object)
-            registro = self.get_object()
-            # Retorna os dados para inicializar o formulário
-            return {
-                'status': registro.status,
-                'nome': registro.nome,
-                'cpf': registro.cpf,
-                'telefone': registro.telefone,
-                'logradouro': registro.logradouro,
-                'nres': registro.nres,
-                'bairro': registro.bairro,
-                'cidade': registro.cidade,
-                'uf': registro.uf,
-                'cep': registro.cep,
-                'dtnasc': registro.dtnasc,
-                'dtcadastro': registro.dtcadastro,
-                'processo': registro.processo,
-                'observacoes': registro.observacoes,
-                'descricao_ocorrencia': registro.descricao_ocorrencia,
-            }
+            raise Http404(_("Registro não encontrado"))
 
     def form_valid(self, form):
-        data = form.cleaned_data  # Dados limpos do formulário
-        id = self.kwargs.get('id')  # Pegue o ID da URL
+        # Envia o formulário atualizado para a API
+        solicitante_id = self.kwargs.get('id')
+        data = form.cleaned_data
 
-        # Convertendo campos de data para string no formato 'YYYY-MM-DD'
+        # Ajusta os campos de data para formato ISO
         if isinstance(data.get('dtnasc'), date):
             data['dtnasc'] = data['dtnasc'].isoformat()
         if isinstance(data.get('dtcadastro'), date):
             data['dtcadastro'] = data['dtcadastro'].isoformat()
 
         headers = {
-            'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoyMDQ0MDYzOTE1LCJpYXQiOjE3Mjg3MDM5MTUsImp0aSI6IjllMWYxODgzOGIxNjRiZGNiNDg2MDdlNDc3YjRkNGVkIiwidXNlcl9pZCI6MX0.wY782l5Mke0w7BiOrodYRJA7CMwRISVk5kW1Q9CvXv4',  # Substitua com seu token ou outra autenticação
-            'Content-Type': 'application/json'  # Dependendo da API
+            'Authorization': 'Bearer SEU_TOKEN',
+            'Content-Type': 'application/json'
         }
 
-        # Enviando os dados como JSON
-        response = requests.put(f"http://3.20.168.85/api/v1/solicitantes/{id}/", json=data, headers=headers)  # Use PUT para atualização
+        # Atualiza o registro usando o método PUT
+        solicitante_update_url = f"http://3.20.168.85/api/v1/solicitantes/{solicitante_id}/"
+        response = requests.put(solicitante_update_url, json=data, headers=headers)
 
-        # Verifica se a requisição foi bem-sucedida
-        if response.status_code == 200:  # Geralmente, o status para uma atualização bem-sucedida é 200
+        if response.status_code == 200:
             return super().form_valid(form)
         else:
-            form.add_error(None, 'Erro ao tentar atualizar o registro.')
+            form.add_error(None, _("Erro ao tentar atualizar o registro."))
             return self.form_invalid(form)
 # Configurando o logger
 logger = logging.getLogger(__name__)
@@ -216,5 +187,5 @@ class RegistroDeleteView(DeleteView):
                  return HttpResponseRedirect(self.success_url)  # Redireciona para a URL de sucesso
             else:
                 # Log de erro se a exclusão falhar
-                # logger.error(f"Erro ao excluir registro {id}: {response.text}")
+                logger.error(f"Erro ao excluir registro {id}: {response.text}")
                 return self.form_invalid(None) 

@@ -33,13 +33,13 @@
               <div class="table-responsive">
                   <table class="table table-striped">
                       <tr>
-                          <th>Nível Ocorrência</th>
-                          <th>Data e Hora</th>
+                          <th>Solicitante</th>
+                          <th>Nível da Ocorrência</th>
+                          <th>Data</th>
                           <th>Latitude</th>
                           <th>Longitude</th>
                           <th>Status</th>
-                          <th>Opção</th>
-                          <th>Solicitante</th>
+
                       </tr>
                       
                       {% for ocorrencia in ocorrencias %}
@@ -50,7 +50,6 @@
                           <td>{{ocorrencia.latocorr}}</td>
                           <td>{{ocorrencia.longocorr}}</td>
                           <td>{{ocorrencia.status}}</td>
-                          <td>{{ocorrencia.link}}</td>
                       </tr>
                       {% empty %}
                       <tr>

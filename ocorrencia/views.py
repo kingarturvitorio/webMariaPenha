@@ -30,7 +30,7 @@ class OcorrenciaListView(ListView):
             ocorrencias = response.json()
 
             # Ordenando as ocorrências manualmente com base na prioridade e data
-            ocorrencias.sort(key=lambda x: (self.prioridade_mapping.get(x['nivelocorrencia'], 4), x['datahora']), reverse=True)
+            ocorrencias.sort(key=lambda x: (self.prioridade_mapping.get(x['nivelocorrencia'], 4), x['id']), reverse=True)
 
             # Substituindo vírgulas por pontos nas coordenadas e convertendo para float
             for ocorrencia in ocorrencias:
